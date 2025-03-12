@@ -1,2 +1,2 @@
-# Nitrososphaera
-High-quality Nitrososphaera MAGs assembled from GCEF
+# Quantitative metagenomics
+Absolute quantification of microbial cells acorss the Atlantic Meridional Transect
