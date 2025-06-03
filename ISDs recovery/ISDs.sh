@@ -1,60 +1,73 @@
-#! /bin/bash
+#!/bin/bash
 #SBATCH --account=fuhrman_1138
 #SBATCH --partition=main
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --time=04:00:00
+#SBATCH --time=4:00:00
 #SBATCH --mem-per-cpu=8G
 #SBATCH --cpus-per-task=8
 #SBATCH --array=1-20
 
 module load conda
-module load bbmap
-module load pear
-module load trimmomatic/0.39
+module load blast
+module load seqtk
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 
-# Create output directories
-mkdir -p 00-BBDuk 01-Clean 02-Merged logs/{00-BBDuk,01-Clean,02-PEAR}
-# Get input files list
-input_files=(raw/*_R1.fastq)
-INPUT="${input_files[$SLURM_ARRAY_TASK_ID-1]}"
-SAMPLE=$(basename "$INPUT" _R1.fastq)
+# Create directory structure
+mkdir -p merged-fasta blastn_results blastx_results filtered_reads logs/{convert,blastn,blastx,filter}
 
-# Step 1: Run bbduk.sh for initial filtering
-bbduk.sh -Xmx8g \
-  in1="raw/${SAMPLE}_R1.fastq" \
-  in2="raw/${SAMPLE}_R2.fastq" \
-  out1="00-BBDuk/${SAMPLE}_R1_clean.fastq" \
-  out2="00-BBDuk/${SAMPLE}_R2_clean.fastq" \
-  ref=phix.fa
-  k=31 \
-  threads=${SLURM_CPUS_PER_TASK:-1} \
-  2>&1 | tee -a "logs/00-BBDuk/${SAMPLE}.out"
+# Get sample list from PEAR output
+input_files=(02-Merged/*.assembled.fastq)
+SAMPLE=$(basename "${input_files[$SLURM_ARRAY_TASK_ID-1]}" .assembled.fastq)
 
-# Step 2: Run Trimmomatic for further polishing
-java -jar $EBROOTTRIMMOMATIC/trimmomatic-0.39.jar PE -phred33 \
-  -threads ${SLURM_CPUS_PER_TASK:-1} \
-  "00-BBDuk/${SAMPLE}_R1_clean.fastq" \
-  "00-BBDuk/${SAMPLE}_R2_clean.fastq" \
-  "01-Clean/${SAMPLE}_1_paired.fastq" \
-  "01-Clean/${SAMPLE}_1_unpaired.fq" \
-  "01-Clean/${SAMPLE}_2_paired.fastq" \
-  "01-Clean/${SAMPLE}_2_unpaired.fq" \
-  ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:8:TRUE \
-  LEADING:5 TRAILING:5 SLIDINGWINDOW:5:20 MINLEN:50 \
-  2>&1 | tee -a "logs/01-Clean/${SAMPLE}.out"
+# Step 1: Convert merged FASTQ to FASTA
+seqtk seq -A "02-Merged/${SAMPLE}.assembled.fastq.gz" > "merged-fasta/${SAMPLE}.fasta"
+echo "Converted ${SAMPLE} to FASTA" | tee -a "logs/convert/${SAMPLE}.log"
 
-# Step 3: PEAR for merging paired reads
-pear \
-  -f "01-Clean/${SAMPLE}_1_paired.fastq" \
-  -r "01-Clean/${SAMPLE}_2_paired.fastq" \
-  -o "02-Merged/${SAMPLE}" \
-  -j ${SLURM_CPUS_PER_TASK:-1} \
-  -p 0.001 \          # P-value cutoff (default)
-  -v 15 \             # Minimum overlap (default)
-  -n 150 \            # Min merged length (~30% of 1000bp)
-  2>&1 | tee -a "logs/02-PEAR/${SAMPLE}.out"
+# Step 2: BLASTn against ISD-DNA.fa
+blastn -query "merged-fasta/${SAMPLE}.fasta" \
+       -db /path/to/ISDs-DNA.fa \
+       -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen" \
+       -num_threads ${SLURM_CPUS_PER_TASK:-1} \
+       -evalue 1e-3 \
+       -perc_identity 95 \
+       -qcov_hsp_perc 50 \
+       -max_hsps 1 \
+       -max_target_seqs 1 \
+       > "blastn_results/${SAMPLE}_vs_ISD-DNA.blastn"
+
+# Count BLASTn hits (filtered at 95% identity)
+blastn_hits=$(wc -l < "blastn_results/${SAMPLE}_vs_ISD-DNA.blastn")
+echo "${SAMPLE} BLASTn hits (95% id): ${blastn_hits}" | tee -a "logs/blastn/${SAMPLE}.log"
+
+# Step 3: Extract BLASTn hits
+awk '{print $1}' "blastn_results/${SAMPLE}_vs_ISD-DNA.blastn" | sort | uniq > "blastn_results/${SAMPLE}_hit_ids.txt"
+seqtk subseq "merged-fasta/${SAMPLE}.fasta" "blastn_results/${SAMPLE}_hit_ids.txt" > "blastn_results/${SAMPLE}_hits.fasta"
+
+# Step 4: BLASTx against ISD-pro.fa
+blastx -query "blastn_results/${SAMPLE}_hits.fasta" \
+       -db /path/to/ISDs-pro.fa \
+       -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen" \
+       -num_threads ${SLURM_CPUS_PER_TASK:-1} \
+       -evalue 1e-3 \
+       -perc_identity 95 \
+       -max_hsps 1 \
+       -max_target_seqs 1 \
+       > "blastx_results/${SAMPLE}_vs_ISD-pro.blastx"
+
+# Count BLASTx hits
+blastx_hits=$(wc -l < "blastx_results/${SAMPLE}_vs_ISD-pro.blastx")
+echo "${SAMPLE} BLASTx hits (95% id): ${blastx_hits}" | tee -a "logs/blastx/${SAMPLE}.log"
+
+# Step 5: Filter final sequences
+awk '{print $1}' "blastx_results/${SAMPLE}_vs_ISD-pro.blastx" | sort | uniq > "blastx_results/${SAMPLE}_final_ids.txt"
+seqtk subseq "merged-fasta/${SAMPLE}.fasta" "blastx_results/${SAMPLE}_final_ids.txt" > "filtered_reads/${SAMPLE}_final.fasta"
+
+# Generate summary report
+echo "=== ${SAMPLE} Summary (95% identity thresholds) ===" > "logs/${SAMPLE}_summary.txt"
+echo "Total merged reads: $(grep -c '^>' merged-fasta/${SAMPLE}.fasta)" >> "logs/${SAMPLE}_summary.txt"
+echo "BLASTn hits (95% id): ${blastn_hits}" >> "logs/${SAMPLE}_summary.txt"
+echo "BLASTx hits (95% id): ${blastx_hits}" >> "logs/${SAMPLE}_summary.txt"
+echo "Final sequences: $(grep -c '^>' filtered_reads/${SAMPLE}_final.fasta)" >> "logs/${SAMPLE}_summary.txt"
 
 conda deactivate
-
