@@ -5,7 +5,7 @@ _Absolute quantification of microbial cells acorss the Atlantic Meridional Trans
 
 High-throughput sequencing has revolutionized our understanding of microbial biodiversity in marine ecosystems. However, most sequencing-based studies report only relative (compositional) rather than absolute abundance, limiting their application in ecological modeling and biogeochemical analyses. To address this gap, we developed a quantitative metagenomic protocol that incorporates genomic internal standards to measure absolute abundances of both prokaryotes and eukaryotic phytoplankton in unfractionated seawater samples.
 
-We present a suite of bash scripts for quantitative metagenomic analysis using internal standards and single-copy gene markers. This pipeline was applied to samples from the 29th Atlantic Meridional Transect (AMT29) to absolutely quantify microbial populations. Three internal genomic standards (ISDs: Thermus thermophilus, Blautia producta, Deinococcus radiodurans) were added to the lysis buffer after bead beating (crude DNA extraction), targeting approximately 1% of total DNA content as internal standards. For bacteria, the recombinase A genes (recA in bacteria, radA in archaea) were selected for their universal distribution and single-copy nature. The psbO gene, encoding a photosystem II oxygen-evolving complex protein, serves as a dual marker for Cyanobacteria (bacterial photosynthesis) and Eukaryotic phytoplankton (nuclear-encoded photosynthesis genes), which together form the base of the marine food web.
+We present a suite of bash scripts for quantitative metagenomic analysis using internal standards and single-copy gene markers. This pipeline was applied to samples from the 29th Atlantic Meridional Transect (AMT29) to absolutely quantify microbial populations. Three internal genomic standards (ISDs: Thermus thermophilus, Blautia producta, Deinococcus radiodurans) were added to the lysis buffer after bead beating (crude DNA extraction), targeting approximately 1% of total DNA content as internal standards. For bacteria, the recombinase A genes (_recA_ in bacteria, _radA_ in archaea) were selected for their universal distribution and single-copy nature. The _psbO_ gene, encoding a photosystem II oxygen-evolving complex protein, serves as a dual marker for Cyanobacteria (bacterial photosynthesis) and Eukaryotic phytoplankton (nuclear-encoded photosynthesis genes), which together form the base of the marine food web.
 
 ---
 
@@ -51,13 +51,13 @@ The abundance of genomic internal standards (ISDs) is first estimated using a BL
 
 To estimate taxon-specific genome equivalents per liter: The number of annotated single-copy genes is divided by the internal standard recovery ratio (R). The result is normalized by the volume of seawater filtered (1 L for AMT29).
 
-To identify recA genes in the metagenomics, bacterial RecA protein sequences were downloaded from NCBI, metagenome reads were queried against the custom RecA database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the RecA annotation. For the psbO gene, assembled reads were searched against the psbO database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
+To identify recA genes in the metagenomics, bacterial recA protein sequences were downloaded from NCBI, metagenome reads were queried against the custom RecA database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the recA annotation. For the psbO gene, assembled reads were searched against the psbO database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
 
 
 ## Curated databases for _recA_ and _radA_ genes
 
-Archaeal radA and acterial RecA protein databases were download from  NCBI containing the key words "recA", "recombinase RecA", or "recombinase A". To shrink the recA database, proteins from opportunistic pathogens were removed, such as _Streptococcus pneumoniae_, _Klebsiella pneumoniae_, _Staphylococcus aureus_, _Salmonella enterica_, _Enterococcus faecium_ and _Pseudomonas aeruginosa_.
+Archaeal radA and acterial recA protein databases were download from  NCBI containing the key words "recA", "recombinase RecA", or "recombinase A". To shrink the recA database, proteins from opportunistic pathogens were removed, such as _Streptococcus pneumoniae_, _Klebsiella pneumoniae_, _Staphylococcus aureus_, _Salmonella enterica_, _Enterococcus faecium_ and _Pseudomonas aeruginosa_.
 
-The recA and radA gene databased in our study are available at https://doi.org/10.6084/m9.figshare.28921349.v1.
+The _recA_ and _radA_ gene databased in our study are available at https://doi.org/10.6084/m9.figshare.28921349.v1.
 
-The psbo gene database from Juan José is available at https://www.ebi.ac.uk/biostudies/studies/S-BSST659.
+The _psbo_ gene database from Juan José is available at https://www.ebi.ac.uk/biostudies/studies/S-BSST659.
