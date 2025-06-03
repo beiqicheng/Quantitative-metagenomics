@@ -50,7 +50,7 @@ diamond blastx \
   --query-cover 30 \
   --threads ${SLURM_CPUS_PER_TASK:-1}
 
-# Count hits (no need for grep since separate DBs)
+# Count hits
 radA_hits=$(wc -l < "diamond_results/${SAMPLE}_radA.diamond")
 recA_hits=$(wc -l < "diamond_results/${SAMPLE}_recA.diamond")
 echo "${SAMPLE} radA hits: ${radA_hits}, recA hits: ${recA_hits}" | tee -a "logs/diamond/${SAMPLE}.log"
@@ -72,11 +72,11 @@ echo "${SAMPLE} psbo hits: ${psbo_hits}" | tee -a "logs/psbo/${SAMPLE}.log"  # F
 ### Step 3: Extract all target genes ###
 mkdir -p "extracted_genes/${SAMPLE}"
 
-# Extract radA sequences (direct from radA-specific output)
+# Extract radA sequences
 awk '{print $1}' "diamond_results/${SAMPLE}_radA.diamond" | sort -u > "extracted_genes/${SAMPLE}/radA_ids.txt"
 seqtk subseq "filtered_reads/${SAMPLE}_final.fasta" "extracted_genes/${SAMPLE}/radA_ids.txt" > "extracted_genes/${SAMPLE}/radA.fasta"
 
-# Extract recA sequences (direct from recA-specific output)
+# Extract recA sequences
 awk '{print $1}' "diamond_results/${SAMPLE}_recA.diamond" | sort -u > "extracted_genes/${SAMPLE}/recA_ids.txt"
 seqtk subseq "filtered_reads/${SAMPLE}_final.fasta" "extracted_genes/${SAMPLE}/recA_ids.txt" > "extracted_genes/${SAMPLE}/recA.fasta"
 
