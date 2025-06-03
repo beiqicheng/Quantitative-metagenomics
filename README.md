@@ -51,12 +51,12 @@ The abundance of genomic internal standards (ISDs) is first estimated using a BL
 
 To estimate taxon-specific genome equivalents per liter: The number of annotated single-copy genes is divided by the internal standard recovery ratio (R). The result is normalized by the volume of seawater filtered (1 L for AMT29).
 
-To identify recA genes in the metagenomics, bacterial recA protein sequences were downloaded from NCBI, metagenome reads were queried against the custom RecA database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the recA annotation. For the psbO gene, assembled reads were searched against the psbO database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
+To identify recA genes in the metagenomics, bacterial recA protein sequences were downloaded from NCBI, metagenome reads were queried against the custom recA database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the recA annotation. For the psbO gene, assembled reads were searched against the psbO database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
 
 
 ## Curated databases for _recA_ and _radA_ genes
 
-Archaeal radA and acterial recA protein databases were download from  NCBI containing the key words "recA", "recombinase RecA", or "recombinase A". To shrink the recA database, proteins from opportunistic pathogens were removed, such as _Streptococcus pneumoniae_, _Klebsiella pneumoniae_, _Staphylococcus aureus_, _Salmonella enterica_, _Enterococcus faecium_ and _Pseudomonas aeruginosa_.
+Archaeal radA and acterial recA protein databases were download from  NCBI containing the key words "recA", "recombinase recA", or "recombinase A". To shrink the recA database for ocean samples, proteins from opportunistic pathogens were removed, such as _Streptococcus pneumoniae_, _Klebsiella pneumoniae_, _Staphylococcus aureus_, _Salmonella enterica_, _Enterococcus faecium_ and _Pseudomonas aeruginosa_.
 
 The _recA_ and _radA_ gene databased in our study are available at https://doi.org/10.6084/m9.figshare.28921349.v1.
 
