@@ -59,4 +59,4 @@ To identify recA genes in the metagenomics, bacterial RecA protein sequences wer
 Archaeal radA and acterial RecA protein databases were download from  NCBI containing the key words "recA", "recombinase RecA", or "recombinase A". To shrink the recA database, proteins from opportunistic pathogens were removed, such as _Streptococcus pneumoniae_, _Klebsiella pneumoniae_, _Staphylococcus aureus_, _Salmonella enterica_, _Enterococcus faecium_ and _Pseudomonas aeruginosa_.
 
 The recA and radA gene databased in our study are available at https://doi.org/10.6084/m9.figshare.28921349.v1
-
+The psbo gene database from Juan José is available at https://www.ebi.ac.uk/biostudies/studies/S-BSST659
