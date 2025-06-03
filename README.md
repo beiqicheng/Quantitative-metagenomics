@@ -1,5 +1,5 @@
-# Quantitative metagenomics
-Absolute quantification of microbial cells acorss the Atlantic Meridional Transect
+# Quantitative Metagenomic Analysis Pipeline
+_Absolute quantification of microbial cells acorss the Atlantic Meridional Transect_
 
 ---
 
@@ -25,33 +25,38 @@ Satinsky, Brandon M., et al. "Use of internal standards for quantitative metatra
 
 0. Quality control
 1. Mergeing paired-end reads
-2. Internal standard recovery
-3. Haploid genome equivalents
+2. Internal standards recovery
+3. Estimating haploid genome equivalents
 
 ---
 
 ## 0. Quality control
 
-**Note:** This tutorial assumes your samples were sequenced on a short read sequencer (300bp x 2 by illumina or AVITI in our study). We suggest to creat a new Conda environment when working in High performance computing (HPC).
+**Note:** This tutorial assumes your samples were sequenced using a short-read platform (e.g., Illumina or AVITI, 2 × 300 bp reads in our case). We recommend creating a new Conda environment when working on high-performance computing (HPC) systems.
 
-Raw reads quality control and trimming (via Trimmomatic). Trimmomatic removes low quality reads as well as adapter sequences. Raw sequencing data also needs to be processed to remove artifacts. This process is to remove contaminant sequences that are present in the sequencing process such as PhiX which is sometimes added as an internal control for sequencing runs (bbduk.sh).
+Raw read quality control and adapter trimming are performed using Trimmomatic to remove low-quality bases and adapter sequences. Additionally, we recommend processing sequencing data with bbduk.sh to eliminate common contaminants such as PhiX control sequences, which are frequently spiked into Illumina sequencing runs as internal controls.
+
 
 ## 1. Mergeing paired-end reads
 
-After quality control, PEAR (Paired-End reAd mergeR) software was applied to merge paired-end reads to generate long reads. Although metagenome assemblers like MEGAHIT and MetaSPAdes can genrate longer reads, the numbers of ISDs and single-copy genes were much lower than that of pair-end merged reads. In our study, around 90% paired-end reads can be merged by PEAR and the average length was 250bp for AMT29 samples.
+After quality control, PEAR (Paired-End reAd mergeR) is used to merge paired-end reads into longer sequences. While assemblers like MEGAHIT and MetaSPAdes can also generate longer contigs, they typically recover fewer internal standard (ISD) and single-copy gene reads compared to merged paired-end reads. In our study, approximately 90% of paired-end reads were successfully merged using PEAR, with an average merged length of 250 bp for AMT29 samples.
 
 ## 2. Internal standards recovery
 
-The number of three genomic ISDs should be quantified by first using a BLASTn homology search against the reference genome sequence to identify all potential standard reads (cuttoff: e-value < 0.001, %ID > 95%, alignment length > 50% of the read length, bit score > 50). The identified internal standard reads were then annotated via a BLASTx (e-value < 0.001) homology search against a database of the internal standard protein sequences, and hits with bit scores < 40 or %ID < 95 were removed. Recovery of internal standards in the libraries was used to estimate gene volumetric abundances using calculations derived from Satinsky et al. (2013):
+The abundance of genomic internal standards (ISDs) is first estimated using a BLASTn search against the known reference genomes (e-value < 0.001, %ID > 95%, alignment length > 50% of the read length, bit score > 50). Identified ISD reads are further verified via a BLASTx search against a curated protein database of ISD sequences, applying e-value < 0.001, %ID > 95%, and bit score > 50. The number of recovered ISD reads is used to calculate gene abundances per liter of seawater, following the method of Satinsky et al. (2013):
 
 ![image](https://github.com/user-attachments/assets/db8dc973-7a69-48d0-aff0-a1ac71c65261)
 
+## 3. Estimating haploid genome equivalents
 
-## 3. Haploid genome equivalents
+To estimate taxon-specific genome equivalents per liter: The number of annotated single-copy genes is divided by the internal standard recovery ratio (R). The result is normalized by the volume of seawater filtered (1 L for AMT29).
 
-Taxon genome equivalents per liter were calculated by dividing the number of annotated single-copy genes annotated by the recovery ratio R then dividing by the seawater volume filtered (1L for AMT29). To identify recA genes in the metagenomics, the bacterial RecA protein sequences were downloaded from NCBI, metagenome reads were then compared to the custom RecA database using a DIAMOND homology search (blastx), with top hits having a bit score > 50 counted as a recA gene, and the results checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the RecA annotation. For the psbO gene, assembled reads were searched against the database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
-
-
+To identify recA genes in the metagenomics, bacterial RecA protein sequences were downloaded from NCBI, metagenome reads were queried against the custom RecA database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the RecA annotation. For the psbO gene, assembled reads were searched against the psbO database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
 
 
+## Curated databases for _recA_ and _radA_ genes
+
+Archaeal radA and acterial RecA protein databases were download from  NCBI containing the key words "recA", "recombinase RecA", or "recombinase A". To shrink the recA database, proteins from opportunistic pathogens were removed, such as _Streptococcus pneumoniae_, _Klebsiella pneumoniae_, _Staphylococcus aureus_, _Salmonella enterica_, _Enterococcus faecium_ and _Pseudomonas aeruginosa_.
+
+The recA and radA gene databased in our study are available at https://doi.org/10.6084/m9.figshare.28921349.v1
 
