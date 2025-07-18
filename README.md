@@ -47,20 +47,19 @@ The abundance of genomic internal standards (ISDs) is first estimated using a BL
 
 ![image](https://github.com/user-attachments/assets/db8dc973-7a69-48d0-aff0-a1ac71c65261)
 
-<span style="color:blue">Recovery of internal standards in the metagenomics was used to estimate gene volumetric abundances for each sample using calculations partly derived from Gifford et al. [2020]:</span>
- 
-<span style="color:blue;font-weight:600">Recovery of internal standards in the metagenomics was used to estimate gene volumetric abundances for each sample using calculations partly derived from Gifford et al. [2020]:</span>
+**Recovery of internal standards in the metagenomics was used to estimate gene volumetric abundances for each sample using calculations partly derived from Gifford et al. [2020]:**
+
 
 <img width="903" height="670" alt="Equations" src="https://github.com/user-attachments/assets/21fb03c3-b7d5-4890-8e49-ce9d4e435f2b" />
 
 
-The volumetric abundance of each single copy gene (e.g. radA or recA) was determined by dividing gene counts by the volume of seawater filtered. The psbO gene is encoded by both cyanobacteria and eukaryotic phytoplankton, enabling cross-domain analysis. We employed two approaches to estimate haploid genome equivalent of photosynthetic eukaryotes. The first applied the recovery ratio directly to psbO reads, as done for recA (Equation 3). However, this method underestimated cyanobacterial (Prochlorococcus and Synechococcus) abundances, with a slope of 0.72 (Pearson’s r = 0.99) compared to recA-based estimates. As an alternative, we calculated the ratio of taxon-specific eukaryotic psbO reads to cyanobacterial psbO reads and then multiplied it by the absolute cyanobacterial abundance based on recA (Equation 4). This assumes an accurate recA cyanobacteria count and that psbO-based underestimation similarly affects both cyanobacteria and photosynthetic eukaryotes, likely due to sequencing depth and limitations in the psbO reference database. 
+The volumetric abundance of each single copy gene (e.g. _radA_ or _recA_) was determined by dividing gene counts by the volume of seawater filtered. The _psbO_ gene is encoded by both cyanobacteria and eukaryotic phytoplankton, enabling cross-domain analysis. We employed two approaches to estimate haploid genome equivalent of photosynthetic eukaryotes. The first applied the recovery ratio directly to _psbO_ reads, as done for _recA_ (Equation 3). However, this method underestimated cyanobacterial (_Prochlorococcus_ and _Synechococcus_) abundances, with a slope of 0.72 (Pearson’s r = 0.99) compared to _recA_-based estimates. As an alternative, we calculated the ratio of taxon-specific eukaryotic _psbO_ reads to cyanobacterial _psbO_ reads and then multiplied it by the absolute cyanobacterial abundance based on _recA_ (Equation 4). This assumes an accurate _recA_ cyanobacteria count and that psbO-based underestimation similarly affects both cyanobacteria and photosynthetic eukaryotes, likely due to sequencing depth and limitations in the _psbO_ reference database. 
 
 ## 3. Estimating haploid genome equivalents
 
 To estimate taxon-specific genome equivalents per liter: The number of annotated single-copy genes is divided by the internal standard recovery ratio (R). The result is normalized by the volume of seawater filtered (1 L for AMT29).
 
-To identify recA genes in the metagenomics, bacterial recA protein sequences were downloaded from NCBI, metagenome reads were queried against the custom recA database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the recA annotation. For the psbO gene, assembled reads were searched against the psbO database generated from Tara Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
+To identify _recA_ genes in the metagenomics, bacterial _recA_ protein sequences were downloaded from NCBI, metagenome reads were queried against the custom _recA_ database using DIAMOND blastx, with top hits having a bit score > 50. The results were also checked against the KEGG database (https://www.kegg.jp/ghostkoala/) to confirm the _recA_ annotation. For the _psbO_ gene, assembled reads were searched against the _psbO_ database generated from _Tara_ Oceans datasets using BLASTn (e-value < 0.001, %id > 80%, bit score > 50).
 
 
 ## Curated databases for _recA_ and _radA_ genes
