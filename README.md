@@ -47,6 +47,13 @@ The abundance of genomic internal standards (ISDs) is first estimated using a BL
 
 ![image](https://github.com/user-attachments/assets/db8dc973-7a69-48d0-aff0-a1ac71c65261)
 
+Recovery of internal standards in the metagenomics was used to estimate gene volumetric abundances for each sample using calculations partly derived from Gifford et al. [2020]:
+
+<img width="908" height="670" alt="Equations" src="https://github.com/user-attachments/assets/0ba65c56-72cf-4233-a7a2-24e2e4a72744" />
+
+
+The volumetric abundance of each single copy gene (e.g. radA or recA) was determined by dividing gene counts by the volume of seawater filtered. The psbO gene is encoded by both cyanobacteria and eukaryotic phytoplankton, enabling cross-domain analysis. We employed two approaches to estimate haploid genome equivalent of photosynthetic eukaryotes. The first applied the recovery ratio directly to psbO reads, as done for recA (Equation 3). However, this method underestimated cyanobacterial (Prochlorococcus and Synechococcus) abundances, with a slope of 0.72 (Pearson’s r = 0.99) compared to recA-based estimates. As an alternative, we calculated the ratio of taxon-specific eukaryotic psbO reads to cyanobacterial psbO reads and then multiplied it by the absolute cyanobacterial abundance based on recA (Equation 4). This assumes an accurate recA cyanobacteria count and that psbO-based underestimation similarly affects both cyanobacteria and photosynthetic eukaryotes, likely due to sequencing depth and limitations in the psbO reference database. 
+
 ## 3. Estimating haploid genome equivalents
 
 To estimate taxon-specific genome equivalents per liter: The number of annotated single-copy genes is divided by the internal standard recovery ratio (R). The result is normalized by the volume of seawater filtered (1 L for AMT29).
