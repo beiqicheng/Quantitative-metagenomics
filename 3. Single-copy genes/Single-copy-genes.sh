@@ -34,8 +34,8 @@ diamond blastx \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen \
   --max-target-seqs 1 \
   --evalue 1e-5 \
-  --id 80 \
-  --query-cover 30 \
+  --id 60 \
+  --query-cover 50 \
   --threads ${SLURM_CPUS_PER_TASK:-1}
 
 ### Step 1: DIAMOND blastx for recA ###
@@ -46,8 +46,8 @@ diamond blastx \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen \
   --max-target-seqs 1 \
   --evalue 1e-5 \
-  --id 80 \
-  --query-cover 30 \
+  --id 60 \
+  --query-cover 50 \
   --threads ${SLURM_CPUS_PER_TASK:-1}
 
 # Count hits
