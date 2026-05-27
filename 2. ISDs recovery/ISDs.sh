@@ -50,7 +50,7 @@ blastx -query "blastn_results/${SAMPLE}_hits.fasta" \
        -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen" \
        -num_threads ${SLURM_CPUS_PER_TASK:-1} \
        -evalue 1e-3 \
-       -perc_identity 95 \
+       -perc_identity 85 \
        -max_hsps 1 \
        -max_target_seqs 1 \
        > "blastx_results/${SAMPLE}_vs_ISD-pro.blastx"
@@ -67,7 +67,7 @@ seqtk subseq "merged-fasta/${SAMPLE}.fasta" "blastx_results/${SAMPLE}_final_ids.
 echo "=== ${SAMPLE} Summary (95% identity thresholds) ===" > "logs/${SAMPLE}_summary.txt"
 echo "Total merged reads: $(grep -c '^>' merged-fasta/${SAMPLE}.fasta)" >> "logs/${SAMPLE}_summary.txt"
 echo "BLASTn hits (95% id): ${blastn_hits}" >> "logs/${SAMPLE}_summary.txt"
-echo "BLASTx hits (95% id): ${blastx_hits}" >> "logs/${SAMPLE}_summary.txt"
+echo "BLASTx hits (85% id): ${blastx_hits}" >> "logs/${SAMPLE}_summary.txt"
 echo "Final sequences: $(grep -c '^>' filtered_reads/${SAMPLE}_final.fasta)" >> "logs/${SAMPLE}_summary.txt"
 
 conda deactivate
