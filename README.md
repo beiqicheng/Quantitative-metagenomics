@@ -43,7 +43,7 @@ After quality control, PEAR (Paired-End reAd mergeR) is used to merge paired-end
 
 ## 2. Internal standards recovery
 
-The abundance of genomic internal standards (ISDs) is first estimated using a BLASTn search against the known reference genomes (e-value < 0.001, %ID > 95%, alignment length > 50% of the read length, bit score > 50). Identified ISD reads are further verified via a BLASTx search against a curated protein database of ISD sequences, applying e-value < 0.001, %ID > 95%, and bit score > 50. The number of recovered ISD reads is used to calculate gene abundances per liter of seawater, following the method of Satinsky et al. (2013):
+The abundance of genomic internal standards (ISDs) is first estimated using a BLASTn search against the known reference genomes (e-value < 0.001, %ID > 95%, alignment length > 50% of the read length, bit score > 50). Identified ISD reads are further verified via a BLASTx search against a curated protein database of ISD sequences, applying e-value < 0.001, %ID > 85%, and bit score > 50. The number of recovered ISD reads is used to calculate gene abundances per liter of seawater, following the method of Satinsky et al. (2013):
 
 ![image](https://github.com/user-attachments/assets/db8dc973-7a69-48d0-aff0-a1ac71c65261)
 
