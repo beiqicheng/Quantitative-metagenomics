@@ -34,7 +34,7 @@ diamond blastx \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen \
   --max-target-seqs 1 \
   --evalue 1e-5 \
-  --id 60 \
+  --id 80 \ #60~80% identity#
   --query-cover 50 \
   --threads ${SLURM_CPUS_PER_TASK:-1}
 
@@ -46,7 +46,7 @@ diamond blastx \
   --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen \
   --max-target-seqs 1 \
   --evalue 1e-5 \
-  --id 60 \
+  --id 80 \  #60~80% identity#
   --query-cover 50 \
   --threads ${SLURM_CPUS_PER_TASK:-1}
 
